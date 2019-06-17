@@ -1,13 +1,13 @@
 USE `essentialmode`;
 
-CREATE TABLE `truck_categories` (
+CREATE TABLE `car_categories` (
 	`name` varchar(60) NOT NULL,
 	`label` varchar(60) NOT NULL,
 
 	PRIMARY KEY (`name`)
 );
 
-INSERT INTO `truck_categories` (name, label) VALUES
+INSERT INTO `car_categories` (name, label) VALUES
 	('haul','Haulers'),
 	('box','Boxed Trucks'),
 	('trans','Transport Trucks'),
@@ -15,7 +15,7 @@ INSERT INTO `truck_categories` (name, label) VALUES
 	('customtrucks','Custom Trucks')
 ;
 
-CREATE TABLE `trucks` (
+CREATE TABLE `used_cars` (
 	`name` varchar(60) NOT NULL,
 	`model` varchar(60) NOT NULL,
 	`price` int(11) NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE `trucks` (
 	PRIMARY KEY (`model`)
 );
 
-INSERT INTO `trucks` (name, model, price, category) VALUES
+INSERT INTO `used_cars` (name, model, price, category) VALUES
 	('Hauler', 'hauler', 100000, 'haul'),
 	('Packer', 'packer', 100000, 'haul'),
 	('Phantom', 'phantom', 105000, 'haul'),

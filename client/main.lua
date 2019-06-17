@@ -31,11 +31,11 @@ Citizen.CreateThread(function()
 
 	Citizen.Wait(10000)
 
-	ESX.TriggerServerCallback('esx_truckshop:getCategories', function(categories)
+	ESX.TriggerServerCallback('1sk_usedcars:getCategories', function(categories)
 		Categories = categories
 	end)
 
-	ESX.TriggerServerCallback('esx_truckshop:getVehicles', function(vehicles)
+	ESX.TriggerServerCallback('1sk_usedcars:getVehicles', function(vehicles)
 		Vehicles = vehicles
 	end)
 end)
@@ -45,13 +45,13 @@ AddEventHandler('esx:playerLoaded', function(xPlayer)
 	ESX.PlayerData = xPlayer
 end)
 
-RegisterNetEvent('esx_truckshop:sendCategories')
-AddEventHandler('esx_truckshop:sendCategories', function(categories)
+RegisterNetEvent('1sk_usedcars:sendCategories')
+AddEventHandler('1sk_usedcars:sendCategories', function(categories)
 	Categories = categories
 end)
 
-RegisterNetEvent('esx_truckshop:sendVehicles')
-AddEventHandler('esx_truckshop:sendVehicles', function(vehicles)
+RegisterNetEvent('1sk_usedcars:sendVehicles')
+AddEventHandler('1sk_usedcars:sendVehicles', function(vehicles)
 	Vehicles = vehicles
 end)
 
@@ -99,7 +99,7 @@ function OpenShopMenu()
 		if IsModelInCdimage(GetHashKey(Vehicles[i].model)) then
 			table.insert(vehiclesByCategory[Vehicles[i].category], Vehicles[i])
 		else
-			print(('esx_truckshop: vehicle "%s" does not exist'):format(Vehicles[i].model))
+			print(('1sk_usedcars: vehicle "%s" does not exist'):format(Vehicles[i].model))
 		end
 	end
 
@@ -130,7 +130,7 @@ function OpenShopMenu()
 
 	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'vehicle_shop',
 	{
-		title    = _U('truck_dealer'),
+		title    = _U('used_cars'),
 		align    = 'top-left',
 		elements = elements
 	}, function(data, menu)
@@ -146,7 +146,7 @@ function OpenShopMenu()
 		}, function(data2, menu2)
 			if data2.current.value == 'yes' then
 				local playerData = ESX.GetPlayerData()
-					ESX.TriggerServerCallback('esx_truckshop:buyVehicle', function(hasEnoughMoney)
+					ESX.TriggerServerCallback('1sk_usedcars:buyVehicle', function(hasEnoughMoney)
 						if hasEnoughMoney then
 							IsInShopMenu = false
 							
@@ -164,7 +164,7 @@ function OpenShopMenu()
 								SetVehicleNumberPlateText(vehicle, newPlate)
 								
 								if Config.EnableOwnedVehicles then
-									TriggerServerEvent('esx_truckshop:setVehicleOwned', vehicleProps)
+									TriggerServerEvent('1sk_usedcars:setVehicleOwned', vehicleProps)
 								end
 								
 								ESX.ShowNotification(_U('truck_purchased'))
@@ -245,7 +245,7 @@ function WaitForVehicleToLoad(modelHash)
 end
 
 -- Entered Marker
-AddEventHandler('esx_truckshop:hasEnteredMarker', function (zone)
+AddEventHandler('1sk_usedcars:hasEnteredMarker', function (zone)
 	if zone == 'ShopEntering' then
 		CurrentAction     = 'shop_menu'
 		CurrentActionMsg  = _U('shop_menu')
@@ -285,7 +285,7 @@ AddEventHandler('esx_truckshop:hasEnteredMarker', function (zone)
 end)
 
 -- Exited Marker
-AddEventHandler('esx_truckshop:hasExitedMarker', function (zone)
+AddEventHandler('1sk_usedcars:hasExitedMarker', function (zone)
 	if not IsInShopMenu then
 		ESX.UI.Menu.CloseAll()
 	end
@@ -313,13 +313,13 @@ end)
 Citizen.CreateThread(function()
 	local blip = AddBlipForCoord(Config.Zones.ShopEntering.Pos.x, Config.Zones.ShopEntering.Pos.y, Config.Zones.ShopEntering.Pos.z)
 
-	SetBlipSprite (blip, 67)
-	SetBlipDisplay(blip, 4)
+	SetBlipSprite (blip, 225)
+	SetBlipDisplay(blip, 2)
 	SetBlipScale  (blip, 1.0)
 	SetBlipAsShortRange(blip, true)
 
 	BeginTextCommandSetBlipName("STRING")
-	AddTextComponentString(_U('truck_dealer'))
+	AddTextComponentString(_U('used_cars'))
 	EndTextCommandSetBlipName(blip)
 end)
 
@@ -363,12 +363,12 @@ Citizen.CreateThread(function()
 		if (isInMarker and not HasAlreadyEnteredMarker) or (isInMarker and LastZone ~= currentZone) then
 			HasAlreadyEnteredMarker = true
 			LastZone                = currentZone
-			TriggerEvent('esx_truckshop:hasEnteredMarker', currentZone)
+			TriggerEvent('1sk_usedcars:hasEnteredMarker', currentZone)
 		end
 
 		if not isInMarker and HasAlreadyEnteredMarker then
 			HasAlreadyEnteredMarker = false
-			TriggerEvent('esx_truckshop:hasExitedMarker', LastZone)
+			TriggerEvent('1sk_usedcars:hasExitedMarker', LastZone)
 		end
 		
 		if not isInMarker then
@@ -401,7 +401,7 @@ Citizen.CreateThread(function()
 						OpenShopMenu()
 					end
 				elseif CurrentAction == 'resell_vehicle' then
-					ESX.TriggerServerCallback('esx_truckshop:resellVehicle', function(vehicleSold)
+					ESX.TriggerServerCallback('1sk_usedcars:resellVehicle', function(vehicleSold)
 						if vehicleSold then
 							ESX.Game.DeleteVehicle(CurrentActionData.vehicle)
 							ESX.ShowNotification(_U('truck_sold_for', CurrentActionData.label, ESX.Math.GroupDigits(CurrentActionData.price)))
@@ -414,15 +414,6 @@ Citizen.CreateThread(function()
 			end
 		end
 	end
-end)
-
-Citizen.CreateThread(function()
-	RequestIpl('shr_int') -- Load walls and floor
-
-	local interiorID = 7170
-	LoadInterior(interiorID)
-	EnableInteriorProp(interiorID, 'csr_beforeMission') -- Load large window
-	RefreshInterior(interiorID)
 end)
 
 function drawLoadingText(text, red, green, blue, alpha)
