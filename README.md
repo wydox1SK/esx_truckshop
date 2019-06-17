@@ -1,3 +1,8 @@
+# About this fork
+This fork changes the way esx_truckshop operates to make it more of a 'Used car' dealer (low Tier cars)
+
+No other dependencies are required.
+
 # About esx_truckshop:
 Boat Shop for ESX Servers
 
